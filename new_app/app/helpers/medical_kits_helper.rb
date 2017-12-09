@@ -1,0 +1,2 @@
+module MedicalKitsHelper
+end

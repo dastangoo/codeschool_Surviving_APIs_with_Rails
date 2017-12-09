@@ -1,0 +1,27 @@
+<%= form_with(model: medical_kit, local: true) do |form| %>
+  <% if medical_kit.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(medical_kit.errors.count, "error") %> prohibited this medical_kit from being saved:</h2>
+
+      <ul>
+      <% medical_kit.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :medical_kit_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :components %>
+    <%= form.text_field :components, id: :medical_kit_components %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
