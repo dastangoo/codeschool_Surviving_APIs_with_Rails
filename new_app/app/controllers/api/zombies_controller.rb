@@ -5,12 +5,19 @@ module API
     # GET /zombies
     # GET /zombies.json
     def index
-      @zombies = Zombie.all
+      zombies = Zombie.all
+      if weapon = params[:weapon]
+        zombies = zombies.where(weapon: weapon)
+      end
+      render json: zombies, status: 200
     end
 
     # GET /zombies/1
     # GET /zombies/1.json
     def show
+      zombie = Zombie.find(params[:id])
+      # render json: zombie, status: 200
+      render json: zombie, status: :ok
     end
 
     # GET /zombies/new
