@@ -24,17 +24,19 @@ class EpisodesController < ApplicationController
   # POST /episodes
   # POST /episodes.json
   def create
-    @episode = Episode.new(episode_params)
-
-    respond_to do |format|
-      if @episode.save
-        format.html { redirect_to @episode, notice: 'Episode was successfully created.' }
-        format.json { render :show, status: :created, location: @episode }
+    episode = Episode.new(episode_params)
+    if episode.save
+      # render json: episode, status: 201, location: episode
+      # render nothing: true, status: 204, location: episode
+      # head 204, location: episode
+      # head :no_content, location: episode
+      
+      if episode.save
+        render json: episode, status: :created, location: episode
       else
-        format.html { render :new }
-        format.json { render json: @episode.errors, status: :unprocessable_entity }
+        # render json: episode.errors, status: 422
+        render json: episode.errors, status: unprocessable_entity
       end
-    end
   end
 
   # PATCH/PUT /episodes/1
@@ -69,6 +71,6 @@ class EpisodesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def episode_params
-      params.require(:episode).permit(:name, :desc)
+      params.require(:episode).permit(:title, :description)
     end
 end
