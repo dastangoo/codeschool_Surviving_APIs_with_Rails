@@ -8,8 +8,7 @@ module API
       zombies = Zombie.all
       
       respond_to do |format|
-          format.json { render json: zombies, status: 200 }
-          format.xml { render xml: zombies, status: 200 }
+          format.json 
       end
     end
 
