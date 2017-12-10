@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   protect_from_forgery with: :null_session
-  before_action :set_locale
+  # before_action :set_locale
+  before_action ->{ @remote_ip = request.headers['REMOTE_ADDR'] }
 
   
   protected 

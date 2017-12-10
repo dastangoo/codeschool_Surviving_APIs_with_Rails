@@ -1,6 +1,13 @@
-Rails.application.routes.draw do
-  namespace :api, path: '/', constraints: { subdomain: 'api' } do
-    resources :zombies
+require "api_version"
+
+CodeSchoolZombies::Application.routes.draw do
+  scope defaults: { format: 'json' } do 
+    scope module: :v1, constraints: ApiVersion.new('v1') do
+      resources :zombies
+    end
+    
+    scope module: :v2, constraints: ApiVersion.new('v2', true) do
+      resources :zombies
+    end
   end
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
