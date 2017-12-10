@@ -4,12 +4,15 @@ class EpisodesController < ApplicationController
   # GET /episodes
   # GET /episodes.json
   def index
-    @episodes = Episode.all
+    episodes = Episode.where(archived: false)
+    render json: episodes, status: 200
   end
 
   # GET /episodes/1
   # GET /episodes/1.json
   def show
+    episode = Episode.find_unarchived(params[:id])
+    render json: episode, status: 200
   end
 
   # GET /episodes/new
@@ -42,25 +45,21 @@ class EpisodesController < ApplicationController
   # PATCH/PUT /episodes/1
   # PATCH/PUT /episodes/1.json
   def update
-    respond_to do |format|
-      if @episode.update(episode_params)
-        format.html { redirect_to @episode, notice: 'Episode was successfully updated.' }
-        format.json { render :show, status: :ok, location: @episode }
-      else
-        format.html { render :edit }
-        format.json { render json: @episode.errors, status: :unprocessable_entity }
-      end
+    episode = Episode.find(params[:id])
+    if episode.update(episode_params)
+      render json: episode, status: 200
+    else
+      render json: episode.errors, status: 422
     end
   end
 
   # DELETE /episodes/1
   # DELETE /episodes/1.json
   def destroy
-    @episode.destroy
-    respond_to do |format|
-      format.html { redirect_to episodes_url, notice: 'Episode was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    # episode = Episode.find(prams[:id])
+    episode = Episode.find_unarchived(prams[:id])
+    episode.archive
+    head 204
   end
 
   private
