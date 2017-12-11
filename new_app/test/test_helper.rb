@@ -8,6 +8,12 @@ class ActiveSupport::TestCase
   def json(body)
     JSON.pars(body, symbolize_names: true)
   end
+  
+  # Helper method returns encoded credentials
+  def encode(username, password)
+    ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+  end
+  
 
   # Add more helper methods to be used by all tests here...
 end

@@ -1,10 +1,10 @@
 class EpisodesController < ApplicationController
-  before_action :set_episode, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate
 
   # GET /episodes
   # GET /episodes.json
   def index
-    episodes = Episode.where(archived: false)
+    episodes = Episode.all
     render json: episodes, status: 200
   end
 
@@ -72,4 +72,36 @@ class EpisodesController < ApplicationController
     def episode_params
       params.require(:episode).permit(:title, :description)
     end
+  protected
+    # def authenticate
+    #   # Reads and decodes username and password from Authorization header
+    #   authenticate_or_request_with_http_basic do |username, password|
+    #     # Custom authentication strategy
+    #     User.authenticate(username, password)
+    #   end
+    # end
+    
+    def authenticate
+      authenticate_basic_auth || render_unauthorized
+    end
+    
+    def authenticate_basic_auth
+      # Returns a boolean and does not halt the request
+      authenticate_with_http_basic do |username, passowrd|
+        User.authenticate(username, password)
+      end
+    end
+    
+    def render_unauthorized
+      # Sets proper header
+      self.headers['WWW-Authenticate'] = 'Basic realm="Episodes"'
+      
+      # Responds to different headers
+      respond_to do |format|
+        format.json { render json: 'Bad credentials', status: 401 }
+        format.xml { render xml: 'Bad credentials', status: 401 }
+      end
+    end
+    
+    
 end
