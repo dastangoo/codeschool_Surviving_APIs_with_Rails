@@ -82,7 +82,19 @@ class EpisodesController < ApplicationController
     # end
     
     def authenticate
-      authenticate_basic_auth || render_unauthorized
+      # authenticate_basic_auth || render_unauthorized
+      # Reads token from Authorization header
+      
+      # authenticate_or_request_with_http_token do |token, options|
+      #   User.find_by(auth_token: token)
+      # end
+      
+      # Pass custom realm name as arguement
+      # authenticate_or_request_with_http_token('Episodes') do |token, options|
+      #   User.find_by(auth_token: token)
+      # end
+      
+      authenticate_token || render_unauthorized
     end
     
     def authenticate_basic_auth
@@ -94,12 +106,20 @@ class EpisodesController < ApplicationController
     
     def render_unauthorized
       # Sets proper header
-      self.headers['WWW-Authenticate'] = 'Basic realm="Episodes"'
+      # self.headers['WWW-Authenticate'] = 'Basic realm="Episodes"'
+      self.headers['WWW-Authenticate'] = 'Token realm="Episodes"'
       
       # Responds to different headers
       respond_to do |format|
         format.json { render json: 'Bad credentials', status: 401 }
         format.xml { render xml: 'Bad credentials', status: 401 }
+      end
+    end
+    
+    def authenticate_token
+      # returns a boolean and does not halt the request
+      authenticate_with_http_token do |token, options|
+        User.find_by(auth_token: token)
       end
     end
     
